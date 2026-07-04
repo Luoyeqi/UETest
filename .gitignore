@@ -1,0 +1,14 @@
+# CLion本地配置
+.idea/
+# CMake编译产物
+cmake-build-*/
+# 二进制文件
+*.so
+*.a
+*.o
+# 备份文件夹
+backup/
+local_backup/
+# 系统临时文件
+Thumbs.db
+.DS_Store
