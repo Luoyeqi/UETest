@@ -4,8 +4,13 @@ APlayerController* UGameplayStatics::GetPlayerControllerFromID(uintptr_t WorldCo
 {
    static uintptr_t pFunc = 0;
    if (!pFunc){
-       pFunc  = StaticFindObject<uintptr_t>(xorstr_("Engine.GameplayStatics.GetPlayerControllerFromID"));
-   }	
+      pFunc  = StaticFindObject<uintptr_t>(xorstr_("Engine.GameplayStatics.GetPlayerControllerFromID"));
+      LOGD("[Get] GetPlayerControllerFromID pFunc=0x%lx", pFunc);
+   }
+   if (!pFunc) {
+      LOGD("[Get] pFunc is NULL, skip");
+      return nullptr;  // ← 防止用null指针调用ProcessEvent
+   }
    struct {
         uintptr_t WorldContextObject;
         int ControllerId;        
@@ -16,6 +21,7 @@ APlayerController* UGameplayStatics::GetPlayerControllerFromID(uintptr_t WorldCo
    ProcessEvent(this, (void*)pFunc, &Params);   
    return Params.ReturnValue;
 }
+
 void UGameplayStatics::GetAllActorsOfClass(uintptr_t WorldContextObject, AActor* ActorClass, TArray<class AActor*>* OutActors)
 {
    static uintptr_t pFunc = 0;
