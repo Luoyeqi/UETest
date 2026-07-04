@@ -10,6 +10,7 @@ static FVector CalcTargetLoc(AActor* TargetPlayer, FVector StartLocaion)
     if (BulletSpeed == 0.0f) {
         BulletSpeed = 75000.0f;
     }
+    
 
     double aimoSpeed = BulletSpeed * 0.01f;
 
