@@ -105,6 +105,7 @@ bool APlayerController::ProjectWorldLocationToScreen(FVector WorldLocation, FVec
    ScreenLocation = Params.ScreenLocation;
    return Params.ReturnValue;
 }
+
 void APlayerController::SetControlRotation(const FRotator& NewRotation)
 {
    static uintptr_t pFunc = 0;

@@ -1,5 +1,8 @@
 #include "library.h"
 
+#include "SDKCPP/SDK/无根_AWSHelper_structs.hpp"
+using namespace SDK;
+
 static FVector CalcTargetLoc(AActor* TargetPlayer, FVector StartLocaion)
 {
     FVector TargetMoveDir = TargetPlayer->GetVelocity();
@@ -112,38 +115,11 @@ static void SetAimLocation(FVector ObjInfo, float distance) {
     }
 }
 
-uintptr_t (*orig_sub)(uintptr_t a1, V4D *a2, float *a3, uintptr_t *a4, uintptr_t *a5, uintptr_t a6, uintptr_t a7);
-uintptr_t new_sub(uintptr_t a1, V4D *a2, float *a3, uintptr_t *a4, uintptr_t *a5, uintptr_t a6, uintptr_t a7) {
-    if (Settings.范围)
-    {
-        auto u64 = GetPointer(a1 + 0x20);
-        if (GetDword(u64 + 0x18) == 1)
-        {
-            if (GetByte(u64 + 0x48) == 53 && GetByte(u64 + 0x4C) == 75)
-            {
-                *a3 = Settings.头范围;
-            }
-            if (GetFloat(u64 + 0x48) == 22.75)
-            {
-                *a3 = Settings.身范围;
-            }
-        }
-    }
-    return orig_sub(a1, a2, a3, a4, a5, a6, a7);
-}
-
 void DrawPlayer()
 {
     int ActorCount = 0;
     float TempDis = 9999;
     AActor* TempObj = 0;
-
-    if (Settings.范围) {
-        if (!initHook) {
-            InlineHook((void *)(GameBase + Offset::CollisionBody), (void *)new_sub, (void **)&orig_sub);
-            initHook = true;
-        }
-    }
 
 
     if (World)
@@ -208,13 +184,6 @@ void DrawPlayer()
                         if (TeamComp) {
                             TeamId = TeamComp->GetTeamIndex();
                             CampId = TeamComp->GetCamp();
-                        }
-                        if (Settings.战场) {
-                            if (SelfTeam == TeamId || SelfCamp == CampId || Health == 0.0)
-                                continue;
-                        } else {
-                            if (SelfTeam == TeamId)
-                                continue;
                         }
 
                         if (bIsAI && Settings.隐藏人机)
@@ -303,31 +272,6 @@ void DrawPlayer()
                 					s += "M)";
                                     DrawText(25, outHead.X, Bottom + 5, TempLockVisble ? 暗红色 : 暗绿色, s.c_str());
                                 }
-                                if (Settings.英雄) {
-                                    int HeroID = GetDword(GetPointer((uintptr_t)Player + Offset::PlayerState) + Offset::HeroID);
-	                                string s;
-                					s += "[";
-                					s += GetHeroName(HeroID);
-                					s += "]";
-                                    DrawText(25, outHead.X, Bottom + 25, TempLockVisble ? 暗红色 : 暗绿色, s.c_str());
-                                }
-                                if (Settings.护甲) {
-                                    int Helmet = GetDword(GetPointer(GetPointer((uintptr_t)Player + Offset::CharacterEquipComponentCache) + Offset::EquipedArmorInfoArray) + Offset::Helmet);
-                                    int Armor = GetDword(GetPointer(GetPointer((uintptr_t)Player + Offset::CharacterEquipComponentCache) + Offset::EquipedArmorInfoArray) + Offset::Armor);
-            						string Text;
-            						Text += std::to_string((int)GetArmorLeveL(Helmet));
-            						Text += "头";
-            						Text += "/";
-            						Text +=  std::to_string((int)GetArmorLeveL(Armor));
-            						Text += "甲";
-                                    DrawText(25, outHead.X, Bottom + 45, TempLockVisble ? 暗红色 : 暗绿色, Text.c_str());
-                				}
-                				if (Settings.手持) {
-                                    auto WeaponId = GetDword(GetPointer((uintptr_t)Player + Offset::CacheCurWeapon) + Offset::WeaponID);
-            						string Text;
-            						Text += GetWeapon(WeaponId);
-                                    DrawText(25, outHead.X, Bottom + 65, TempLockVisble ? 暗红色 : 暗绿色, Text.c_str());
-                				}
                             } else {
 		                        if (Settings.信息) {
                 					string s;
@@ -540,7 +484,7 @@ void DrawMenu()
 	ImGui::NewFrame();
 
 	ImGui::SetNextWindowSize(ImVec2(800, 450), ImGuiCond_Once);
-    if (ImGui::Begin(xorstr_("KX追踪")))
+    if (ImGui::Begin(xorstr_("DY追踪")))
     {
         if (ImGui::BeginTabBar(xorstr_("Tab"), ImGuiTabBarFlags_FittingPolicyScroll))
         {
@@ -561,10 +505,6 @@ void DrawMenu()
                 ImGui::SameLine();
                 ImGui::Checkbox(xorstr_("绘制人数"), &Settings.人数);
 
-                ImGui::Checkbox(xorstr_("绘制英雄"), &Settings.英雄);
-                ImGui::SameLine();
-                ImGui::Checkbox(xorstr_("战场模式"), &Settings.战场);
-                ImGui::SameLine();
                 ImGui::Checkbox(xorstr_("隐藏人机"), &Settings.隐藏人机);
 
                 ImGui::EndTabItem();
@@ -604,18 +544,11 @@ void DrawMenu()
                 ImGui::Checkbox(xorstr_("忽略人机"), &Settings.忽略人机);
                 ImGui::EndTabItem();
             }
-            if (ImGui::BeginTabItem(xorstr_("范围设置"))) {
-                ImGui::Checkbox(xorstr_("人物范围"), &Settings.范围);
-                ImGui::SliderFloat(xorstr_("头部范围"), &Settings.头范围, 1.0f, 8.f, xorstr_("%.2f"));
-                ImGui::SliderFloat(xorstr_("身体范围"), &Settings.身范围, 1.0f, 8.f, xorstr_("%.2f"));
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), xorstr_("关闭以后恢复效果无法恢复被改动的内存"));
-                ImGui::EndTabItem();
-            }
         }
         ImGui::Text(xorstr_("耗时 %.3fms/真实帧率 (%.1fFPS)"), 1000.0f / io.Framerate, io.Framerate);
     }
 
-    DrawText(40.0f, screenWidth / 2, 50, ImColor(255, 255, 0, 255), "Telegram: @Sakurayyda");
+    DrawText(40.0f, screenWidth / 2, 50, ImColor(255, 255, 0, 255), "Telegram: @MAGI");
 
     DrawPlayer();
 	ImGui::End();

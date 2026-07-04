@@ -142,11 +142,9 @@ struct Config {
     bool 骨骼;
     bool 血量;
     bool 信息;
-    bool 英雄;
     bool 手持;
     bool 护甲;
     bool 人数;
-    bool 战场;    
     bool 盒子;
     bool 隐藏人机;
 
@@ -163,9 +161,6 @@ struct Config {
     int 拉枪速度 = 3;
         
     bool 子弹瞬击;
-    bool 范围;
-    float 头范围 = 3.0f;
-    float 身范围 = 3.0f;    
     int 最低过滤价值 = 10000;
     int Index01 = 0;
     
