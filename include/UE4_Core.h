@@ -10,7 +10,7 @@ inline FunctionType GetVirtualFunction(void* classInstance, int functionIndex)
 void ProcessEvent(void* objectInstance, void* function, void* parameters)
 {
     using EventFunctionType = void(*)(void*, void*, void*);
-    constexpr int ProcessEventIndex = 69;
+    constexpr int ProcessEventIndex = 76;
     
     auto ProcessEventFunction = GetVirtualFunction<EventFunctionType>(objectInstance, ProcessEventIndex);
     ProcessEventFunction(objectInstance, function, parameters);
