@@ -17,7 +17,7 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -g0 -s")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections,--strip-all")
 
 # 提前导入android native glue头文件
-include_directories("D:/android-ndk-r27d/sources/android/native_app_glue")
+include_directories("native_app_glue")
 
 
 # 全部头文件目录
@@ -31,12 +31,12 @@ include_directories(
 
 # 添加 native_app_glue 源码（NDK 提供的胶水代码）
 add_library(native_app_glue STATIC
-        D:/android-ndk-r27d/sources/android/native_app_glue/android_native_app_glue.c
+        native_app_glue/android_native_app_glue.c
 )
 
 # 为其设置头文件搜索路径（这样 Game 也能继承）
 target_include_directories(native_app_glue PUBLIC
-        D:/android-ndk-r27d/sources/android/native_app_glue
+        native_app_glue/native_app_glue
 )
 
 # 收集源文件
