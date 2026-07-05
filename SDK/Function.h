@@ -1,10 +1,10 @@
 #include "Class.h"
 
-/*APlayerController* UGameplayStatics::GetPlayerControllerFromID(uintptr_t WorldContextObject, int ControllerId)
+APlayerController* UGameplayStatics::GetPlayerControllerFromID(uintptr_t WorldContextObject, int ControllerId)
 {
    static uintptr_t pFunc = 0;
    if (!pFunc){
-      pFunc  = StaticFindObject<uintptr_t>(xorstr_("Engine.GameplayStatics.GetPlayerControllerFromID"));
+      pFunc  = StaticFindObject<uintptr_t>(xorstr_("GameplayStatics.GetPlayerControllerFromID"));
       LOGD("[Get] GetPlayerControllerFromID pFunc=0x%lx", pFunc);
    }
    if (!pFunc) {
@@ -20,8 +20,9 @@
    Params.ControllerId = ControllerId;
    ProcessEvent(this, (void*)pFunc, &Params);   
    return Params.ReturnValue;
-}*/
+}
 
+/*
 APlayerController* UGameplayStatics::GetPlayerControllerFromID(uintptr_t WorldContextObject, int ControllerId)
 {
    LOGD("[GetPlayerController] Enter. this=0x%lx WorldContextObject=0x%lx ControllerId=%d",
@@ -66,6 +67,7 @@ APlayerController* UGameplayStatics::GetPlayerControllerFromID(uintptr_t WorldCo
 
    return Params.ReturnValue;
 }
+*/
 
 void UGameplayStatics::GetAllActorsOfClass(uintptr_t WorldContextObject, AActor* ActorClass, TArray<class AActor*>* OutActors)
 {
