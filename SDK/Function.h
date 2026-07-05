@@ -4,7 +4,7 @@ APlayerController* UGameplayStatics::GetPlayerControllerFromID(uintptr_t WorldCo
 {
    static uintptr_t pFunc = 0;
    if (!pFunc){
-      pFunc  = StaticFindObject<uintptr_t>(xorstr_("GameplayStatics.GetPlayerControllerFromID"));
+      pFunc  = StaticFindObject<uintptr_t>(xorstr_("GameplayStatics.GetPlayerController"));
       LOGD("[Get] GetPlayerControllerFromID pFunc=0x%lx", pFunc);
    }
    if (!pFunc) {
