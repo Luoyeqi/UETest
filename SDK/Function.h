@@ -1,6 +1,6 @@
 #include "Class.h"
 
-APlayerController* UGameplayStatics::GetPlayerControllerFromID(uintptr_t WorldContextObject, int ControllerId)
+/*APlayerController* UGameplayStatics::GetPlayerControllerFromID(uintptr_t WorldContextObject, int ControllerId)
 {
    static uintptr_t pFunc = 0;
    if (!pFunc){
@@ -19,6 +19,51 @@ APlayerController* UGameplayStatics::GetPlayerControllerFromID(uintptr_t WorldCo
    Params.WorldContextObject = WorldContextObject;   
    Params.ControllerId = ControllerId;
    ProcessEvent(this, (void*)pFunc, &Params);   
+   return Params.ReturnValue;
+}*/
+
+APlayerController* UGameplayStatics::GetPlayerControllerFromID(uintptr_t WorldContextObject, int ControllerId)
+{
+   LOGD("[GetPlayerController] Enter. this=0x%lx WorldContextObject=0x%lx ControllerId=%d",
+        (uintptr_t)this, WorldContextObject, ControllerId);
+
+   if (this == nullptr) {
+      LOGD("[GetPlayerController] this is NULL, return nullptr");
+      return nullptr;
+   }
+
+   static uintptr_t pFunc = 0;
+   if (!pFunc){
+      LOGD("[GetPlayerController] Calling StaticFindObject...");
+      void* pClass = StaticFindObject<void*>(xorstr_("GameplayStatics"));
+      LOGD("[GetPlayerController] pClass=0x%lx", (uintptr_t)pClass);
+      if (pClass) {
+         pFunc = StaticFindObject<uintptr_t>(pClass, xorstr_("GetPlayerController"));
+      }
+      LOGD("[GetPlayerController] pFunc=0x%lx", pFunc);
+   }
+   if (!pFunc) {
+      LOGD("[GetPlayerController] pFunc is NULL, skip ProcessEvent");
+      return nullptr;
+   }
+   if (!WorldContextObject) {
+      LOGD("[GetPlayerController] WorldContextObject is NULL, skip ProcessEvent");
+      return nullptr;
+   }
+
+   struct {
+      uintptr_t WorldContextObject;
+      int ControllerId;
+      APlayerController* ReturnValue;
+   } Params;
+   Params.WorldContextObject = WorldContextObject;
+   Params.ControllerId = ControllerId;
+   Params.ReturnValue = nullptr;
+
+   LOGD("[GetPlayerController] Calling ProcessEvent...");
+   ProcessEvent(this, (void*)pFunc, &Params);
+   LOGD("[GetPlayerController] Done. ReturnValue=0x%lx", (uintptr_t)Params.ReturnValue);
+
    return Params.ReturnValue;
 }
 

@@ -1,8 +1,5 @@
 #include "library.h"
 
-#include "SDKCPP/SDK/无根_AWSHelper_structs.hpp"
-using namespace SDK;
-
 static FVector CalcTargetLoc(AActor* TargetPlayer, FVector StartLocaion)
 {
     FVector TargetMoveDir = TargetPlayer->GetVelocity();
